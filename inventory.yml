@@ -1,0 +1,7 @@
+
+all:
+  hosts:
+    # Charing ROV attached to a piloting computer
+    nano:
+      ansible_host: 172.31.12.146
+      ansible_user: sysop

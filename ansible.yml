@@ -1,0 +1,107 @@
+#
+# \todo  Check that var_hostname is set
+#
+
+- hosts: all
+  vars:
+    - var_username: sysop
+  become: true
+
+  tasks:
+    - name: Set system hostname
+      ansible.builtin.hostname:
+        name: '{{ inventory_hostname }}'
+
+    # Ensure default user is in correct groups
+    - name: Add user to groups
+      user:
+        name: "{{ var_username }}"
+        append: true
+        groups:
+          - i2c
+          - sudo
+          - video
+
+    - name: Upgrade apt packages
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+        upgrade: safe
+        autoclean: true
+
+    - name: Install dependencies with APT
+      apt:
+        install_recommends: false
+        state: present
+        name:
+        - build-essential  # for gcc
+        - git
+        - htop
+        - iotop
+        - libboost1.??-all-dev
+        - libcap-dev
+        - python-is-python3
+        - python3-pip
+        - python3-venv
+        - python3-virtualenv
+        - tmux
+        - v4l-utils
+        - zsh
+
+    - name: Remove graphical tools and desktop with APT
+      apt:
+        state: absent
+        purge: true
+        autoremove: yes
+        name:
+          - x11-common
+          - xserver-common
+
+    - name: Install jetson-stats with pip as ROOT
+      pip:
+        extra_args: --no-cache-dir
+        name:
+          - jetson-stats
+
+    # Add user to jtop group (which only exists after above package is installed)
+    - name: Add user to groups
+      user:
+        name: "{{ var_username }}"
+        append: true
+        groups:
+          - jtop
+
+    # Install jetson_stats using pip3
+    - name: Install python formatting / linting / testing utilities and jetson_stats in a venv
+      become_user: "{{ var_username }}"
+      pip:
+        virtualenv: "/home/{{ var_username }}/.venv/base"
+        name:
+          - black
+          - clang-format
+          - flake8
+          - flake8-bugbear
+          - flake8-comprehensions
+          - pep8-naming
+          - pre-commit
+          - pylint
+          - vcstool
+
+
+    # Ansible-managed changes to .bashrc and .zshrc
+    - name: Update RC files
+      become_user: "{{ var_username }}"
+      blockinfile:
+        path: /home/{{ var_username }}/.{{item}}rc
+        block: |
+          export PATH=$HOME/.local/bin:$PATH
+
+          # Load default venv
+          source $HOME/.venv/base/bin/activate
+
+          # Convenience aliases
+          alias aaron_git='git -c user.name="Aaron Marburg" -c user.email="amarburg@uw.edu"'
+        marker: "# {mark} -- ANSIBLE MANAGED BLOCK:"
+        create: true
+      with_items:
+        - "bash"

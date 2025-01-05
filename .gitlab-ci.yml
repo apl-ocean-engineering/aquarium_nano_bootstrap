@@ -1,0 +1,12 @@
+stages:
+  - &lint "🧹 LINT"
+
+pre-commit:
+  stage: *lint
+  image:
+    name: kiwicom/pre-commit:3.6.0
+  script:
+    - git config --global --add safe.directory $CI_PROJECT_DIR
+    - pre-commit run --all-files --verbose --color always
+  only:
+    - merge_requests
