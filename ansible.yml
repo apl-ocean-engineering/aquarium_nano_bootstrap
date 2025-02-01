@@ -76,6 +76,7 @@
       become_user: "{{ var_username }}"
       pip:
         virtualenv: "/home/{{ var_username }}/.venv/base"
+        virtualenv_command: /usr/bin/python -m venv --system-site-packages
         name:
           - black
           - clang-format

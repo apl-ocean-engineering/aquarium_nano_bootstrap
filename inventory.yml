@@ -5,3 +5,7 @@ all:
     nano:
       ansible_host: 172.31.12.146
       ansible_user: sysop
+
+    clyde:
+      ansible_host: 172.31.12.142
+      ansible_user: sysop
