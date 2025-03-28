@@ -1,0 +1,12 @@
+[Unit]
+Description=ROS2 Zenoh router
+
+[Service]
+User=sysop
+Group=sysop
+Environment="RMW_IMPLEMENTATION=rmw_zenoh_cpp"
+ExecStart=bash -c "if [ -f /opt/ros/humble/setup.bash ]; then source /opt/ros/humble/setup.bash && ros2 run rmw_zenoh_cpp rmw_zenohd; fi"
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

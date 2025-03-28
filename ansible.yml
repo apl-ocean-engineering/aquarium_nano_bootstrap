@@ -2,7 +2,9 @@
 # \todo  Check that var_hostname is set
 #
 
-- hosts: all
+- hosts:
+    - all
+    - localhost
   vars:
     - var_username: sysop
   become: true
@@ -48,14 +50,14 @@
         - v4l-utils
         - zsh
 
-    - name: Remove graphical tools and desktop with APT
-      apt:
-        state: absent
-        purge: true
-        autoremove: yes
-        name:
-          - x11-common
-          - xserver-common
+    # - name: Remove graphical tools and desktop with APT
+    #   apt:
+    #     state: absent
+    #     purge: true
+    #     autoremove: yes
+    #     name:
+    #       - x11-common
+    #       - xserver-common
 
     - name: Install jetson-stats with pip as ROOT
       pip:
@@ -102,7 +104,25 @@
 
           # Convenience aliases
           alias aaron_git='git -c user.name="Aaron Marburg" -c user.email="amarburg@uw.edu"'
+
+          # When using ROS2, prefer Zenoh
+          export RMW_IMPLEMENTATION=rmw_zenoh_cpp
         marker: "# {mark} -- ANSIBLE MANAGED BLOCK:"
         create: true
       with_items:
         - "bash"
+
+    - name: Install rmw_zenoh service
+      copy:
+        mode: 644
+        owner: root
+        group: root
+        dest: /etc/systemd/system/rmw_zenohd.service
+        src: files/rmw_zenohd.service
+
+    - name: Ensure rmw_zenoh service is running
+      systemd_service:
+        state: started
+        enabled: true
+        daemon_reload: true
+        name: rmw_zenohd
