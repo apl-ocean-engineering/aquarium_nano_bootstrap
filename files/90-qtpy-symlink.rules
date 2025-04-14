@@ -1,0 +1,9 @@
+#
+# Creates symlink /dev/qtpy for the _drive_ functions of QtPy
+#
+ACTION=="add", SUBSYSTEM=="block", ATTRS{idVendor}=="239a", ATTRS{idProduct}=="80cc", SYMLINK+="qtpy"
+
+#
+# Creates a symlink /dev/ttyQtPy for the _serial_ functions of the QtPy
+#
+ACTION=="add", SUBSYSTEM=="tty", ATTRS{idVendor}=="239a", ATTRS{idProduct}=="80cc", SYMLINK+="ttyQtPy"

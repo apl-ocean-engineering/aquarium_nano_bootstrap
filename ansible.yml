@@ -112,13 +112,21 @@
       with_items:
         - "bash"
 
+    - name: Install udev rules
+      copy:
+        mode: 644
+        owner: root
+        group: root
+        src: files/90-qtpy-symlink.rules
+        dest: /etc/udev/rules.d/90-qtpy-symlink.rules
+
     - name: Install rmw_zenoh service
       copy:
         mode: 644
         owner: root
         group: root
-        dest: /etc/systemd/system/rmw_zenohd.service
         src: files/rmw_zenohd.service
+        dest: /etc/systemd/system/rmw_zenohd.service
 
     - name: Ensure rmw_zenoh service is running
       systemd_service:
