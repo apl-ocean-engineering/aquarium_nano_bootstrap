@@ -112,13 +112,30 @@
       with_items:
         - "bash"
 
-    - name: Install udev rules
+    - name: Install udev rules for QtPy
       copy:
         mode: 644
         owner: root
         group: root
         src: files/90-qtpy-symlink.rules
         dest: /etc/udev/rules.d/90-qtpy-symlink.rules
+
+    - name: Install udev rules for Vectornav
+      copy:
+        mode: 644
+        owner: root
+        group: root
+        src: files/90-qtpy-symlink.rules
+        dest: /etc/udev/rules.d/90-vectornav-symlink.rules
+
+    - name: Add qtpy to fstab
+      blockinfile:
+        path: /etc/fstab
+        block: |
+          # Mount QtPy
+          /dev/qtpy   /mnt/qtpy   vfat    nofail,rw,users,umask=000      0 0
+        marker: "# {mark} -- ANSIBLE MANAGED BLOCK:"
+        create: true
 
     - name: Install rmw_zenoh service
       copy:

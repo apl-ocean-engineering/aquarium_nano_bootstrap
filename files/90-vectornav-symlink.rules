@@ -1,0 +1,4 @@
+#
+# Creates symlink /dev/qtpy for the _drive_ functions of QtPy
+#
+ACTION=="add", SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", SYMLINK+="ttyVectornav"
