@@ -1,3 +1,10 @@
+> [!WARNING]  
+> This repo has been migrated to [https://gitlab.com/apl-ocean-engineering/nano-odometry-mapping/odometry_nano_bootstrap](https://gitlab.com/apl-ocean-engineering/nano-odometry-mapping/odometry_nano_bootstrap) and has been archived.
+
+
+----
+
+
 # aquarium_nano_bootstrap
 
 Ansible scripts codifying the setup of a Aquarium Jetson Nano
